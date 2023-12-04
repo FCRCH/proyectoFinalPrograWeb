@@ -6,9 +6,14 @@ import Button from "@mui/material/Button";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
+
+import axios from "axios";
 
 const Perfilpersona = (props) => {
+  const urlDelApi = "http://localhost:8080/api/note/byid";
 
+  const [newNote, setNewNote] = useState({ id: '', title: '', content: '' });
   const [user,setUser]= React.useState(props.user);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -27,8 +32,20 @@ const Perfilpersona = (props) => {
   }
 
   //metodo para agregar nota a base de datos
-  
-  
+  const insertarNotaDB = (event) =>   {
+    const { id, title, content } = newNote;
+    axios
+    .post(urlDelApi, newNote)
+    .then(response=>{
+      console.log('Post success');
+      console.log('Response: ', response.data);
+    })
+  .catch(function (error) {
+    console.log(error);
+  })
+  .finally(function() {
+  });
+  };
   return (
   <div className={styles.Perfilpersona} data-testid="Perfilpersona">
 <div>
@@ -64,12 +81,12 @@ const Perfilpersona = (props) => {
 
   <h1>Perfil: {user?.usuario}</h1>
   <form>
-    <TextField required id="standard-basic" label="Titulo" variant="standard" name="titulo" type="text"/>
+    <TextField required id="standard-basic-" label="Titulo" variant="standard" name="titulo" type="text"/>
     <br/>
     <TextField required id="standard-basic" label="Nota" variant="standard" name="nota" type="text"/>
     <br/>
     <br/>
-    <Button variant="contained" name="AgregarNota" type="submit">Agregar</Button>
+    <Button variant="contained" name="AgregarNota" type="submit" onClick={insertarNotaDB}>Agregar</Button>
     <Button variant="contained" name="Cancelar" type="reset">Cancelar</Button>
     <br></br>
     <h2>Eliminar/Editar Nota</h2>
